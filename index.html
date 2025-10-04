@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Happy Birthday Book</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                background-color: #0a0a0a; /* black background */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                font-family: 'Playfair Display', serif;
+                overflow: hidden;
+                perspective: 1000px;
+            }
+
+            .book {
+                position: relative;
+                width: 90%;
+                max-width: 800px;
+                height: 500px;
+                transition: transform 0.5s;
+                transform-style: preserve-3d;
+                max-width: 800px;
+                width: 90vw;
+                height: 60vw;
+                max-height: 500px;
+                min-width: 320px;
+                min-height: 400px;
+            }
+
+            .book-cover {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(45deg, #8b0000, #ff0000);
+                border-radius: 5px 15px 15px 5px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                backface-visibility: hidden;
+                transform-origin: left;
+                transition: transform 1s;
+                z-index: 10;
+                cursor: pointer;
+            }
+
+            .book-cover h1 {
+                font-family: 'Dancing Script', cursive;
+                font-size: clamp(2rem, 6vw, 3.5rem); /* Responsive text size */
+                margin-bottom: 20px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .book-cover p {
+                font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive text size */
+                margin-bottom: 30px;
+            }
+
+            .book-cover .open-me {
+                padding: 10px 20px;
+                background: white;
+                color: #8b0000;
+                border: none;
+                border-radius: 30px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .book-cover .open-me:hover {
+                transform: scale(1.05);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .book-content {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: white;
+                border-radius: 5px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                display: flex;
+                overflow: hidden;
+                backface-visibility: hidden;
+                pointer-events: none;
+                transform: rotateY(180deg);
+                z-index: 2;
+            }
+
+            .book.opened .book-content {
+                pointer-events: auto;
+                z-index: 11;
+            }
+
+            .book.opened .book-cover {
+                z-index: 1;
+            }
+
+            .page {
+                position: absolute;
+                width: 50%;
+                height: 100%;
+                padding: 40px; /* ORIGINAL SIZE */
+                transition: transform 1s;
+                transform-origin: left;
+                background: white;
+                box-sizing: border-box;
+                overflow: hidden;
+            }
+
+            .page-left {
+                left: 0;
+                border-right: 1px solid #f0e6d2;
+            }
+
+            .page-right {
+                right: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* Removed .page-number CSS as it's no longer needed for individual pages */
+            /* .page-number {
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                color: #999;
+                font-size: 0.8rem;
+            } */
+
+            .page h2 {
+                font-family: 'Dancing Script', cursive;
+                color: #8b0000;
+                margin-bottom: 20px;
+                font-size: clamp(1.5rem, 4vw, 2rem); /* Responsive text size */
+            }
+
+            .page p {
+                line-height: 1.6;
+                margin-bottom: 25px;
+                color: #333;
+                font-size: clamp(0.85rem, 2vw, 1rem); /* Responsive text size */
+            }
+
+            .cake-container {
+                position: relative;
+                width: 100%;
+                max-width: 180px;
+                height: 180px;
+                margin: 10px 0 30px 0;
+            }
+
+            /* Original cake body with gradient and heart decorations */
+            .cake {
+                position: absolute;
+                width: 150px;
+                height: 75px;
+                background: linear-gradient(135deg, #ff3366 60%, #ff99cc 100%);
+                border-radius: 30px 30px 20px 20px / 40px 40px 20px 20px;
+                bottom: 0;
+                left: 30px;
+                box-shadow: 0 0 30px #ff3366, 0 8px 30px #ff99cc;
+                border: 3px solid #ff3366;
+                overflow: visible;
+            }
+
+            .cake:before {
+                content: '';
+                position: absolute;
+                width: 130px;
+                height: 16px;
+                background: linear-gradient(90deg, #ff99cc 60%, #ff3366 100%);
+                border-radius: 20px;
+                bottom: -10px; /* ORIGINAL SIZE */
+                left: -5px; /* ORIGINAL SIZE */
+                box-shadow: 0 0 10px #ff99cc;
+            }
+
+            .cake:after {
+                /* Heart decorations */
+                content: '';
+                position: absolute;
+                left: 50%;
+                bottom: 20px; /* ORIGINAL SIZE */
+                transform: translateX(-50%);
+                width: 80px;
+                height: 20px;
+                background: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 24 24' fill='%23ff3366' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+                    repeat-x;
+                background-size: 30px 30px;
+            }
+
+            .candle {
+                position: absolute;
+                width: 8px;
+                height: 60px;
+                background: #ff3366;
+                bottom: 70px;
+                /* Calculate the center of the cake (180px width) + its left offset (30px) */
+                /* (180px / 2) + 30px = 90px + 30px = 120px */
+                /* Then subtract half of the candle's width (10px / 2 = 5px) */
+                /* 120px - 5px = 115px */
+                left: 95px; /* Adjusted to center on the cake */
+                transform: translateX(-50%); /* Keep for fine-tuning if needed, but not strictly necessary with precise left value */
+                z-index: 2;
+                border-radius: 5px;
+                box-shadow: 0 0 10px #ff3366, 0 0 20px #ff3366;
+            }
+
+            .flame {
+                position: absolute;
+                width: 15px;
+                height: 28px;
+                background: #ff9e00;
+                border-radius: 50% 50% 20% 20%;
+                bottom: 130px;
+                /* Match the candle's left position */
+                left: 95px; /* Adjusted to center on the cake */
+                transform: translateX(-50%);
+                box-shadow: 0 0 10px #ff9e00, 0 0 20px #ff9e00;
+                animation: flicker 1s infinite alternate;
+                z-index: 3;
+            }
+
+            .page-image {
+                width: auto;
+                max-width: 90%;
+                max-height: 70%;
+                object-fit: contain;
+                margin-bottom: 30px;
+                border-radius: 5px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .navigation {
+                position: absolute;
+                bottom: 20px; /* ORIGINAL SIZE */
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                padding: 0 20px; /* ORIGINAL SIZE */
+                z-index: 20;
+                background: rgba(255, 255, 255, 0.7);
+                border-radius: 10px;
+                font-size: 1rem; /* ORIGINAL SIZE */
+                align-items: center;
+                gap: 10px;
+                /* Centering the navigation */
+                left: 50%;
+                transform: translateX(-50%);
+                max-width: 90%; /* Adjust as needed to fit within book */
+            }
+
+            /* Fix: Ensure book stays centered when opened on phones */
+            .book.opened {
+                transform: translateX(
+                    0
+                ) !important; /* Override any JS transform */
+            }
+
+            /* Media query for larger phones (e.g., Samsung Galaxy S20 Ultra, iPhone 11/12/13/14/15 Pro Max) */
+            /* Max-width 480px covers up to S20 Ultra (412px logical width) and similar large phones */
+            @media (max-width: 480px) {
+                .book {
+                    width: 98vw;
+                    height: 70vw; /* Adjusted for better aspect ratio on these phones */
+                    min-width: 320px; /* Ensure it doesn't get smaller than iPhone SE */
+                    min-height: 400px; /* Ensure it doesn't get too short */
+                }
+                .page {
+                    padding: 15px;
+                    font-size: clamp(0.8rem, 2vw, 0.85rem); /* Responsive text size */
+                }
+                .navigation {
+                    padding: 0 10px;
+                    bottom: 10px;
+                    font-size: 0.85rem;
+                }
+                .book-cover h1 {
+                    font-size: 2.2rem; /* Smaller for these phones */
+                    margin-bottom: 10px;
+                }
+                .book-cover p {
+                    font-size: 1rem;
+                    margin-bottom: 15px;
+                }
+                .book-cover .open-me {
+                    padding: 8px 15px;
+                    font-size: 0.85rem;
+                }
+                .page h2 {
+                    font-size: clamp(1.3rem, 3.5vw, 1.6rem); /* Responsive text size */
+                    margin-bottom: 10px;
+                }
+                /* Removed .page-number from media queries too */
+                /* .page-number {
+                    font-size: 0.7rem;
+                    bottom: 10px;
+                    right: 10px;
+                } */
+                .cake-container {
+                    width: 180px; /* Smaller cake container */
+                    height: 180px;
+                    margin: 10px 0 40px 0;
+                }
+                .cake {
+                    width: 130px; /* Smaller cake */
+                    height: 70px;
+                    left: 18px;
+                }
+                .cake:before {
+                    content: '';
+                    position: absolute;
+                    width: 140px;
+                    height: 18px;
+                    background: linear-gradient(
+                        90deg,
+                        #ff99cc 60%,
+                        #ff3366 100%
+                    );
+                    border-radius: 20px;
+                    bottom: -8px;
+                    left: -5px;
+                    box-shadow: 0 0 10px #ff99cc;
+                }
+                .cake:after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    bottom: 20px;
+                    transform: translateX(-50%);
+                    width: 100px;
+                    height: 25px;
+                    background: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 24 24' fill='%23ff3366' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+                        repeat-x;
+                    background-size: 30px 30px;
+                }
+                .candle {
+                    width: 8px;
+                    height: 60px;
+                    bottom: 70px;
+                    /* (130px / 2) + 18px - (8px / 2) = 65px + 18px - 4px = 79px */
+                    left: 79px; /* Adjusted for smaller cake */
+                }
+                .flame {
+                    width: 16px;
+                    height: 30px;
+                    bottom: 130px;
+                    left: 79px; /* Adjusted for smaller cake */
+                }
+                .page-image {
+                    max-width: 85%;
+                    max-height: 60%;
+                }
+            }
+
+            /* Media query for 540px width (e.g., some tablets in portrait or larger phones) */
+            @media (max-width: 540px) {
+                .page {
+                    font-size: 0.9rem; /* Slightly smaller than 480px default */
+                    padding: 18px; /* Adjusted padding */
+                }
+                .navigation {
+                    font-size: 0.9rem;
+                }
+                .book-cover h1 {
+                    font-size: 2.5rem;
+                }
+                .book-cover p {
+                    font-size: 1.1rem;
+                }
+                .book-cover .open-me {
+                    font-size: 0.95rem;
+                }
+                .page h2 {
+                    font-size: 1.8rem;
+                }
+                /* Removed .page-number from media queries too */
+                /* .page-number {
+                    font-size: 0.75rem;
+                } */
+                .cake-container {
+                    width: 200px; /* Keep original cake size for this width */
+                    height: 200px;
+                }
+            }
+
+            /* Media query for 414px width (e.g., iPhone XR, iPhone 11) */
+            @media (max-width: 414px) {
+                .page {
+                    padding: 10px; /* Adjusted padding */
+                    font-size: 0.75rem; /* Smaller body text */
+                }
+                .navigation {
+                    font-size: 0.75rem;
+                }
+                .book-cover h1 {
+                    font-size: 1.8rem; /* Smaller */
+                }
+                .book-cover p {
+                    font-size: 0.85rem;
+                }
+                .book-cover .open-me {
+                    font-size: 0.75rem;
+                }
+                .page h2 {
+                    font-size: 1.4rem; /* Smaller */
+                }
+                /* Removed .page-number from media queries too */
+                /* .page-number {
+                    font-size: 0.6rem;
+                } */
+                .cake-container {
+                    width: 150px; /* Smaller cake container */
+                    height: 150px;
+                    margin: 6px 0 35px 0;
+                }
+                .cake {
+                    width: 110px;
+                    height: 60px;
+                    left: 15px;
+                }
+                .cake:before {
+                    content: '';
+                    position: absolute;
+                    width: 120px;
+                    height: 15px;
+                    background: linear-gradient(
+                        90deg,
+                        #ff99cc 60%,
+                        #ff3366 100%
+                    );
+                    border-radius: 20px;
+                    bottom: -6px;
+                    left: -5px;
+                    box-shadow: 0 0 10px #ff99cc;
+                }
+                .cake:after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    bottom: 20px;
+                    transform: translateX(-50%);
+                    width: 85px;
+                    height: 20px;
+                    background: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 24 24' fill='%23ff3366' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+                        repeat-x;
+                    background-size: 30px 30px;
+                }
+                .candle {
+                    width: 6px;
+                    height: 50px;
+                    bottom: 60px;
+                    /* (110px / 2) + 15px - (6px / 2) = 55px + 15px - 3px = 67px */
+                    left: 67px; /* Adjusted for smaller cake */
+                }
+                .flame {
+                    width: 13px;
+                    height: 24px;
+                    bottom: 108px;
+                    left: 67px; /* Adjusted for smaller cake */
+                }
+            }
+
+            /* Media query for 412px width (e.g., Google Pixel, some Samsung Galaxy) */
+            @media (max-width: 412px) {
+                .page {
+                    padding: 11px; /* Reduced padding */
+                    font-size: 0.78rem; /* Even smaller body text */
+                }
+                .navigation {
+                    font-size: 0.78rem;
+                }
+                .book-cover h1 {
+                    font-size: 1.9rem; /* Further adjusted */
+                }
+                .book-cover p {
+                    font-size: 0.9rem;
+                }
+                .book-cover .open-me {
+                    font-size: 0.78rem;
+                }
+                .page h2 {
+                    font-size: 1.45rem; /* Further adjusted */
+                }
+                /* Removed .page-number from media queries too */
+                /* .page-number {
+                    font-size: 0.62rem;
+                } */
+                .cake-container {
+                    width: 160px; /* Further smaller cake container */
+                    height: 160px;
+                    margin: 7px 0;
+                }
+                .cake {
+                    width: 120px;
+                    height: 65px;
+                    left: 15px;
+                }
+                .cake:before {
+                    content: '';
+                    position: absolute;
+                    width: 130px;
+                    height: 16px;
+                    background: linear-gradient(
+                        90deg,
+                        #ff99cc 60%,
+                        #ff3366 100%
+                    );
+                    border-radius: 20px;
+                    bottom: -6px;
+                    left: -5px;
+                    box-shadow: 0 0 10px #ff99cc;
+                }
+                .cake:after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    bottom: 20px;
+                    transform: translateX(-50%);
+                    width: 90px;
+                    height: 22px;
+                    background: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 24 24' fill='%23ff3366' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+                        repeat-x;
+                    background-size: 30px 30px;
+                }
+                .candle {
+                    width: 6px;
+                    height: 55px;
+                    bottom: 65px;
+                    /* (120px / 2) + 15px - (6px / 2) = 60px + 15px - 3px = 72px */
+                    left: 72px; /* Adjusted for smaller cake */
+                }
+                .flame {
+                    width: 14px;
+                    height: 26px;
+                    bottom: 118px;
+                    left: 72px; /* Adjusted for smaller cake */
+                }
+            }
+
+            /* Media query for 390px width (e.g., iPhone 12/13/14 Pro) */
+            @media (max-width: 390px) {
+                .page {
+                    padding: 10px; /* Adjusted padding */
+                    font-size: 0.75rem; /* Smaller body text */
+                }
+                .navigation {
+                    font-size: 0.75rem;
+                }
+                .book-cover h1 {
+                    font-size: 1.7rem; /* Smaller */
+                }
+                .book-cover p {
+                    font-size: 0.85rem;
+                }
+                .book-cover .open-me {
+                    font-size: 0.75rem;
+                }
+                .page h2 {
+                    font-size: 1.35rem; /* Smaller */
+                }
+                /* Removed .page-number from media queries too */
+                /* .page-number {
+                    font-size: 0.58rem;
+                } */
+                .cake-container {
+                    width: 140px; /* Smaller cake container */
+                    height: 140px;
+                    margin: 5px 0 30px 0;
+                }
+                .cake {
+                    width: 100px;
+                    height: 55px;
+                    left: 15px;
+                }
+                .cake:before {
+                    content: '';
+                    position: absolute;
+                    width: 110px;
+                    height: 14px;
+                    background: linear-gradient(
+                        90deg,
+                        #ff99cc 60%,
+                        #ff3366 100%
+                    );
+                    border-radius: 20px;
+                    bottom: -5px;
+                    left: -5px;
+                    box-shadow: 0 0 10px #ff99cc;
+                }
+                .cake:after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    bottom: 20px;
+                    transform: translateX(-50%);
+                    width: 80px;
+                    height: 18px;
+                    background: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 24 24' fill='%23ff3366' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+                        repeat-x;
+                    background-size: 30px 30px;
+                }
+                .candle {
+                    width: 5px;
+                    height: 45px;
+                    bottom: 55px;
+                    /* (100px / 2) + 15px - (5px / 2) = 50px + 15px - 2.5px = 62.5px */
+                    left: 62.5px; /* Adjusted for smaller cake */
+                }
+                .flame {
+                    width: 12px;
+                    height: 22px;
+                    bottom: 98px;
+                    left: 62.5px; /* Adjusted for smaller cake */
+                }
+            }
+
+            /* Media query for iPhone 6/7/8 (logical width 375px) and similar */
+            @media (max-width: 375px) {
+                .page {
+                    padding: 9px; /* Slightly less padding */
+                    font-size: 0.72rem; /* Even smaller body text for 375px */
+                }
+                .navigation {
+                    padding: 0 4px;
+                    bottom: 4px;
+                    font-size: 0.7rem;
+                }
+                .nav-button {
+                    padding: 4px 9px;
+                    font-size: 0.7rem;
+                }
+                .page-indicator {
+                    font-size: 0.7rem;
+                }
+                .book-cover h1 {
+                    font-size: 1.7rem; /* Adjusted for 375px */
+                    margin-bottom: 7px;
+                }
+                .book-cover p {
+                    font-size: 0.8rem; /* Adjusted for 375px */
+                    margin-bottom: 12px;
+                }
+                .book-cover .open-me {
+                    padding: 5px 10px;
+                    font-size: 0.7rem;
+                }
+                .page h2 {
+                    font-size: 1.25rem; /* Adjusted for 375px */
+                    margin-bottom: 7px;
+                }
+                /* Removed .page-number from media queries too */
+                /* .page-number {
+                    font-size: 0.55rem;
+                    bottom: 4px;
+                    right: 4px;
+                } */
+            }
+
+            /* Media query for Samsung Galaxy S8 (logical width 360px) and similar */
+            @media (max-width: 360px) {
+                .page {
+                    font-size: 0.7rem; /* Even smaller body text */
+                    padding: 8px; /* Adjusted padding */
+                }
+                .navigation {
+                    font-size: 0.7rem;
+                }
+                .book-cover h1 {
+                    font-size: 1.6rem; /* Smaller */
+                }
+                .book-cover p {
+                    font-size: 0.75rem;
+                }
+                .book-cover .open-me {
+                    font-size: 0.7rem;
+                }
+                .page h2 {
+                    font-size: 1.2rem; /* Smaller */
+                }
+                /* Removed .page-number from media queries too */
+                /* .page-number {
+                    font-size: 0.5rem;
+                } */
+            }
+
+            /* Media query for 344px width (e.g., specific phone resolutions) */
+            @media (max-width: 344px) {
+                .page {
+                    padding: 7px; /* Adjusted padding */
+                    font-size: 0.65rem; /* Even smaller body text */
+                }
+                .navigation {
+                    padding: 0 2px;
+                    bottom: 2px;
+                    font-size: 0.6rem;
+                }
+                .nav-button {
+                    padding: 3px 7px;
+                    font-size: 0.6rem;
+                }
+                .page-indicator {
+                    font-size: 0.6rem;
+                }
+                .book-cover h1 {
+                    font-size: 1.4rem; /* Smaller */
+                    margin-bottom: 5px;
+                }
+                .book-cover p {
+                    font-size: 0.7rem;
+                    margin-bottom: 8px;
+                }
+                .book-cover .open-me {
+                    padding: 4px 8px;
+                    font-size: 0.6rem;
+                }
+                .page h2 {
+                    font-size: 1.1rem; /* Smaller */
+                    margin-bottom: 5px;
+                }
+                /* Removed .page-number from media queries too */
+                /* .page-number {
+                    font-size: 0.38rem;
+                    bottom: 2px;
+                    right: 2px;
+                } */
+                .cake-container {
+                    width: 115px; /* Slightly smaller cake container */
+                    height: 115px;
+                    margin: 3px 0 25px 0;
+                }
+                .cake {
+                    width: 82px;
+                    height: 42px;
+                    left: 10px;
+                }
+                .cake:before {
+                    content: '';
+                    position: absolute;
+                    width: 92px;
+                    height: 12px;
+                    background: linear-gradient(
+                        90deg,
+                        #ff99cc 60%,
+                        #ff3366 100%
+                    );
+                    border-radius: 20px;
+                    bottom: -5px;
+                    left: -5px;
+                    box-shadow: 0 0 10px #ff99cc;
+                }
+                .cake:after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    bottom: 20px;
+                    transform: translateX(-50%);
+                    width: 72px;
+                    height: 18px;
+                    background: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 24 24' fill='%23ff3366' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+                        repeat-x;
+                    background-size: 30px 30px;
+                }
+                .candle {
+                    width: 4px;
+                    height: 36px;
+                    bottom: 46px;
+                    /* (82px / 2) + 10px - (4px / 2) = 41px + 10px - 2px = 49px */
+                    left: 49px; /* Adjusted for smaller cake */
+                }
+                .flame {
+                    width: 10px;
+                    height: 19px;
+                    bottom: 82px;
+                    left: 49px; /* Adjusted for smaller cake */
+                }
+            }
+
+            /* Media query for iPhone SE (320px logical width) and similar smallest phones */
+            @media (max-width: 320px) {
+                .book {
+                    width: 98vw;
+                    height: 80vw; /* Even taller for the smallest screens */
+                    min-width: 260px;
+                    min-height: 320px;
+                }
+                .page {
+                    padding: 6px; /* Even more minimal padding */
+                    font-size: 0.6rem; /* SIGNIFICANTLY SMALLER body text */
+                }
+                .navigation {
+                    padding: 0 2px; /* Reduced padding */
+                    bottom: 2px; /* Reduced bottom spacing */
+                    font-size: 0.55rem; /* Smaller nav font */
+                }
+                .nav-button {
+                    padding: 3px 6px; /* Smaller buttons */
+                    font-size: 0.55rem;
+                }
+                .page-indicator {
+                    font-size: 0.55rem;
+                }
+                .book-cover h1 {
+                    font-size: 1.2rem; /* Smallest heading */
+                    margin-bottom: 5px; /* Reduced margin */
+                }
+                .book-cover p {
+                    font-size: 0.65rem; /* Smallest cover text */
+                    margin-bottom: 8px; /* Reduced margin */
+                }
+                .book-cover .open-me {
+                    padding: 4px 8px; /* Smallest button */
+                    font-size: 0.6rem;
+                }
+                .page h2 {
+                    font-size: 1rem; /* Smallest page heading */
+                    margin-bottom: 6px; /* Reduced margin */
+                }
+                /* Removed .page-number from media queries too */
+                /* .page-number {
+                    font-size: 0.35rem;
+                    bottom: 2px;
+                    right: 2px;
+                } */
+                .cake-container {
+                    width: 165px;
+                    height: 165px;
+                    margin: 10px 0 40px 0;
+                }
+                .cake {
+                    width: 120px;
+                    height: 60px;
+                    left: 15px;
+                }
+                .cake:before {
+                    content: '';
+                    position: absolute;
+                    width: 135px;
+                    height: 18px;
+                    background: linear-gradient(
+                        90deg,
+                        #ff99cc 60%,
+                        #ff3366 100%
+                    );
+                    border-radius: 20px;
+                    bottom: -5px;
+                    left: -5px;
+                    box-shadow: 0 0 10px #ff99cc;
+                }
+                .cake:after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    bottom: 20px;
+                    transform: translateX(-50%);
+                    width: 70px;
+                    height: 18px;
+                    background: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 24 24' fill='%23ff3366' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+                        repeat-x;
+                    background-size: 30px 30px;
+                }
+                .candle {
+                    width: 5px;
+                    height: 35px;
+                    bottom: 45px;
+                    /* (120px / 2) + 15px - (5px / 2) = 60px + 15px - 2.5px = 72.5px */
+                    left: 72.5px; /* Adjusted for smaller cake */
+                }
+                .flame {
+                    width: 10px;
+                    height: 18px;
+                    bottom: 80px;
+                    left: 72.5px; /* Adjusted for smaller cake */
+                }
+                .page-image {
+                    max-width: 95%;
+                    max-height: 60%;
+                    margin-bottom: 25px;
+                }
+            }
+
+            .flower-bouquet {
+                width: 150px;
+                height: 200px;
+                position: relative;
+                margin: 20px 0;
+            }
+
+            .flower {
+                position: absolute;
+                width: 40px;
+                height: 40px;
+                background: #ff3366;
+                border-radius: 50%;
+            }
+
+            .flower:before {
+                content: '';
+                position: absolute;
+                width: 20px;
+                height: 60px;
+                background: #4caf50;
+                bottom: -60px;
+                left: 10px;
+            }
+
+            .flower:nth-child(1) {
+                top: 20px;
+                left: 30px;
+                background: #ff3366;
+            }
+
+            .flower:nth-child(2) {
+                top: 40px;
+                left: 70px;
+                background: #ff99cc;
+            }
+
+            .flower:nth-child(3) {
+                top: 10px;
+                left: 90px;
+                background: #ff6666;
+            }
+
+            .flower:nth-child(4) {
+                top: 50px;
+                left: 20px;
+                background: #ff9999;
+            }
+
+            .flower:nth-child(5) {
+                top: 30px;
+                left: 50px;
+                background: #ff5050;
+            }
+
+            .nav-button {
+                background: #8b0000;
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 20px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .nav-button:hover {
+                background: #ff0000;
+                transform: scale(1.05);
+            }
+
+            .nav-button:disabled {
+                background: #cccccc;
+                cursor: not-allowed;
+            }
+
+            .page-indicator {
+                color: #8b0000;
+                font-weight: bold;
+                margin: 0 10px;
+            }
+
+            @keyframes flicker {
+                0%,
+                100% {
+                    transform: translateX(-50%) scale(1);
+                    opacity: 1;
+                }
+                50% {
+                    transform: translateX(-50%) scale(0.9);
+                    opacity: 0.8;
+                }
+            }
+
+            .confetti {
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                background-color: #ff3366;
+                opacity: 0;
+            }
+
+            .heart {
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff3366'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+                    no-repeat center center;
+                opacity: 0;
+                animation: float 6s linear infinite;
+            }
+            @keyframes float {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+
+            .page-left,
+            .page-right {
+                transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+                backface-visibility: hidden;
+                box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+            }
+            .page-left.flipped,
+            .page-right.flipped {
+                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+            }
+            .page-left.active,
+            .page-right.active {
+                box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="hearts" id="hearts"></div>
+        <div class="book" id="book">
+            <div class="book-cover" id="bookCover">
+                <h1>Happy Birthday! BeeBee</h1>
+                <p>A Special Book For You</p>
+                <button class="open-me" id="openButton">Open Me</button>
+            </div>
+
+            <div class="book-content" id="bookContent">
+                <!-- Page 1 -->
+                <div id="p1" class="page page-left" style="z-index: 9">
+                    <h2>To BeeBee</h2>
+                    <p>
+                        As you turn 26, I wanted to create something special to
+                        celebrate you. This book contains my wishes, thoughts,
+                        and feelings for you on your special day.
+                    </p>
+                    <p>
+                        Flip through the pages to discover my birthday message
+                        for you.
+                    </p>
+                    <button
+                        id="backToCoverBtn"
+                        style="
+                            display: none;
+                            margin-top: 20px;
+                            padding: 10px 25px;
+                            background: linear-gradient(
+                                45deg,
+                                #ff3366,
+                                #ff0066
+                            );
+                            color: white;
+                            border: none;
+                            border-radius: 30px;
+                            font-size: 1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                        "
+                    >
+                        Book cover
+                    </button>
+                    <!-- Removed individual page number div -->
+                </div>
+                <div id="p1r" class="page page-right" style="z-index: 9">
+                    <div class="cake-container">
+                        <div class="cake"></div>
+                        <div class="candle"></div>
+                        <div class="flame"></div>
+                    </div>
+                    <p>May your year be as sweet as this birthday cake!</p>
+                    <!-- Removed individual page number div -->
+                </div>
+
+                <!-- Page 2 -->
+                <div id="p2" class="page page-left" style="z-index: 8">
+                    <h2>26 Reasons</h2>
+                    <p>Here are 26 reasons why you're amazing:</p>
+                    <p>
+                        1. Your beautiful smile<br />
+                        2. Your kind heart<br />
+                        3. Your intelligence<br />
+                        4. Your sense of humor<br />
+                        ...and 22 more reasons I keep in my heart.
+                    </p>
+                    <!-- Removed individual page number div -->
+                </div>
+                <div id="p2r" class="page page-right" style="z-index: 8">
+                    <img
+                        src="https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTExL3JtNjAzLWVsZW1lbnQtMTIwZF8xLmpwZw.jpg"
+                        alt="Cartoon rose bouquet"
+                        style="
+                            max-width: 70%;
+                            max-height: 60%;
+                            border-radius: 12px;
+                            box-shadow: 0 8px 24px rgba(255, 51, 102, 0.15);
+                        "
+                    />
+                    <p>
+                        A bouquet of roses for the most beautiful person I know.
+                    </p>
+                    <!-- Removed individual page number div -->
+                </div>
+
+                <!-- Page 3 -->
+                <div id="p3" class="page page-left" style="z-index: 7">
+                    <h2>Memories</h2>
+                    <p>
+                        We’ve known each other since childhood, even if we
+                        haven’t been very close lately.
+                    </p>
+                    <p>
+                        I still remember your laugh, your thoughts, and how you
+                        make others feel. Those memories mean a lot, and I hope
+                        we can be closer friends.
+                    </p>
+                    <!-- Removed individual page number div -->
+                </div>
+                <div id="p3r" class="page page-right" style="z-index: 7">
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMB71CpLWxE7iTWRihfOBuv_eHkcHknQhs6w&s"
+                        alt="Memories"
+                        style="
+                            max-width: 85%;
+                            max-height: 70%;
+                            border-radius: 12px;
+                            box-shadow: 0 8px 24px rgba(255, 51, 102, 0.15);
+                        "
+                    />
+                    <p>
+                        May your year be filled with beautiful moments like
+                        this.
+                    </p>
+                    <!-- Removed individual page number div -->
+                </div>
+
+                <!-- Page 4 -->
+                <div id="p4" class="page page-left" style="z-index: 6">
+                    <h2>Wishes</h2>
+                    <p>
+                        I wish for your happiness, success, and all the love you
+                        deserve.
+                    </p>
+                    <p>
+                        I wish for your dreams to come true, for your days to be
+                        bright, and for your heart to be light.
+                    </p>
+                    <!-- Removed individual page number div -->
+                </div>
+                <div id="p4r" class="page page-right" style="z-index: 6">
+                    <img
+                        src="https://www.peakfireworks.co.uk/wp-content/uploads/2020/06/Wedding-Brocade-copy.jpeg"
+                        alt="Sparkling fireworks"
+                        style="
+                            max-width: 80%;
+                            max-height: 65%;
+                            border-radius: 14px;
+                            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.18);
+                            background: #fffbe6;
+                        "
+                    />
+                    <p>May your year sparkle with joy!</p>
+                    <!-- Removed individual page number div -->
+                </div>
+
+                <!-- Page 5 -->
+                <div id="p5" class="page page-left" style="z-index: 5">
+                    <h2>From Me To You</h2>
+                    <p>This book is my way of saying you're special to me.</p>
+                    <p>
+                        Even if I haven’t said it before, seeing you always
+                        brightens my day. You’re a special part of my life.
+                    </p>
+                    <!-- Removed individual page number div -->
+                </div>
+                <div id="p5r" class="page page-right" style="z-index: 5">
+                    <img
+                        src="https://kangaroo.care/cdn/shop/articles/corazon_ad70c068-1fa2-49c4-9d17-b3bb18824ebb.png?v=1745071327&width=533"
+                        alt="Heart illustration"
+                        style="
+                            max-width: 80%;
+                            max-height: 65%;
+                            border-radius: 14px;
+                            box-shadow: 0 8px 24px rgba(255, 51, 102, 0.15);
+                        "
+                    />
+                    <p>Happy Birthday to someone who means a lot to me.</p>
+                    <!-- Removed individual page number div -->
+                </div>
+
+                <div class="navigation">
+                    <button class="nav-button" id="prevButton">Previous</button>
+                    <span class="page-indicator" id="pageIndicator"
+                        >Page 1/10</span
+                    >
+                    <button class="nav-button" id="nextButton">Next</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Book opening functionality
+            const bookCover = document.getElementById('bookCover');
+            const openButton = document.getElementById('openButton');
+            const bookContent = document.getElementById('bookContent');
+            const book = document.getElementById('book');
+            const pageIndicator = document.getElementById('pageIndicator');
+            const backToCoverBtn = document.getElementById('backToCoverBtn');
+
+            let currentPage = 0;
+            const totalPages = 5; // This represents the number of page *pairs*
+            const pagePairs = [
+                ['p1', 'p1r'],
+                ['p2', 'p2r'],
+                ['p3', 'p3r'],
+                ['p4', 'p4r'],
+                ['p5', 'p5r'],
+            ];
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+
+            function showPagePair(index) {
+                for (let i = 0; i < pagePairs.length; i++) {
+                    document.getElementById(pagePairs[i][0]).style.display =
+                        i === index ? 'block' : 'none';
+                    document.getElementById(pagePairs[i][1]).style.display =
+                        i === index ? 'block' : 'none';
+                }
+                // If first page, change Previous to Back to Cover
+                if (index === 0) {
+                    prevButton.textContent = 'Book cover';
+                    prevButton.disabled = false; // Enable it to go back to cover
+                } else {
+                    prevButton.textContent = 'Previous';
+                    prevButton.disabled = false;
+                }
+                nextButton.disabled = index === pagePairs.length - 1;
+
+                // Remove the page number text
+                pageIndicator.textContent = '';
+            }
+
+            openButton.addEventListener('click', function () {
+                bookCover.style.transform = 'rotateY(-180deg)';
+                bookContent.style.transform = 'rotateY(0deg)';
+                book.classList.add('opened');
+                showPagePair(currentPage);
+                // createConfetti(); // This function is not defined in the provided context, so commenting out
+            });
+
+            nextButton.addEventListener('click', function () {
+                if (currentPage < pagePairs.length - 1) {
+                    currentPage++;
+                    showPagePair(currentPage);
+                }
+            });
+
+            prevButton.addEventListener('click', function () {
+                if (currentPage === 0) {
+                    // Back to Cover
+                    bookCover.style.transform = '';
+                    bookContent.style.transform = 'rotateY(180deg)';
+                    book.classList.remove('opened');
+                } else if (currentPage > 0) {
+                    currentPage--;
+                    showPagePair(currentPage);
+                }
+            });
+
+            backToCoverBtn.addEventListener('click', function () {
+                bookCover.style.transform = '';
+                bookContent.style.transform = 'rotateY(180deg)';
+                book.classList.remove('opened');
+            });
+
+            // Floating hearts animation
+            function createHearts() {
+                const heartsContainer = document.getElementById('hearts');
+                const heartCount = 30;
+                for (let i = 0; i < heartCount; i++) {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.top = Math.random() * 100 + 'vh';
+                    heart.style.width = Math.random() * 20 + 10 + 'px';
+                    heart.style.height = heart.style.width;
+                    heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    heartsContainer.appendChild(heart);
+                }
+            }
+
+            // On load, hide all except the first pair
+            window.addEventListener('load', function () {
+                createHearts();
+                showPagePair(0);
+            });
+        </script>
+    </body>
+</html>
